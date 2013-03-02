@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='virtualenv-ruby',
-    version='0.1-dev',
+    version='0.1',
     package_dir={
         '': 'src',
     },
