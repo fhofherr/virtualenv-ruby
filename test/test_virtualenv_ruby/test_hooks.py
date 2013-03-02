@@ -26,7 +26,7 @@ class TestHookBuilder(TestCase):
                 path_backup=hooks._VIRTUALENV_RUBY_OLD_PATH),
             'export PATH="{path_ext}:$PATH"'.format(path_ext=path_ext),
         ]
-        with patch('__builtin__.open', self.mock_open, create=True):
+        with self.patched_open():
             self.hook_builder.write_postactivate_hook()
         self.assert_appends_to_hook(
             self.postactivate_hook_file, expected_lines)
@@ -39,7 +39,7 @@ class TestHookBuilder(TestCase):
                 path_backup=hooks._VIRTUALENV_RUBY_OLD_PATH),
         ]
         self.hook_builder.extend_path('$GEM_HOME/bin')
-        with patch('__builtin__.open', self.mock_open, create=True):
+        with self.patched_open():
             self.hook_builder.write_postdeactivate_hook()
         self.assert_appends_to_hook(
             self.postdeactivate_hook_file, expected_lines)
@@ -50,7 +50,7 @@ class TestHookBuilder(TestCase):
         expected_lines = ['export ' + var_name + "=" + var_value]
 
         self.hook_builder.add_environment_variable(var_name, var_value)
-        with patch('__builtin__.open', self.mock_open, create=True):
+        with self.patched_open():
             self.hook_builder.write_postactivate_hook()
         self.assert_appends_to_hook(
             self.postactivate_hook_file, expected_lines)
@@ -61,12 +61,26 @@ class TestHookBuilder(TestCase):
         expected_lines = ['unset ' + var_name]
 
         self.hook_builder.add_environment_variable(var_name, var_value)
-        with patch('__builtin__.open', self.mock_open, create=True):
+        with self.patched_open():
             self.hook_builder.write_postdeactivate_hook()
         self.assert_appends_to_hook(
             self.postdeactivate_hook_file, expected_lines)
+
+    def test_adds_environment_variables_before_changing_path(self):
+        self.hook_builder.add_environment_variable('some_var', 'some_value')
+        self.hook_builder.extend_path('some_ext')
+        expected_lines = (
+            self.hook_builder._create_postactivate_env_var_lines()
+            + self.hook_builder._create_postactivate_path_ext_lines())
+        with self.patched_open():
+            self.hook_builder.write_postactivate_hook()
+        self.assert_appends_to_hook(
+            self.postactivate_hook_file, expected_lines)
 
     def assert_appends_to_hook(self, hook_file, expected_lines):
         self.mock_open.assert_called_once_with(hook_file, 'a')
         handle = self.mock_open()
         handle.writelines.assert_called_once_with(expected_lines)
+
+    def patched_open(self):
+        return patch('__builtin__.open', self.mock_open, create=True)

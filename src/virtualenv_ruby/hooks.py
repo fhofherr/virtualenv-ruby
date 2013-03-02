@@ -23,17 +23,17 @@ class HookBuilder(object):
 
     def write_postactivate_hook(self):
         postactivate_hook_file = self.__get_hook_file('postactivate')
-        env_vars = self.__create_postactivate_env_var_lines()
-        path_exts = self.__create_postactivate_path_ext_lines()
+        env_vars = self._create_postactivate_env_var_lines()
+        path_exts = self._create_postactivate_path_ext_lines()
         self.__write_hook_file(postactivate_hook_file, env_vars + path_exts)
 
-    def __create_postactivate_env_var_lines(self):
+    def _create_postactivate_env_var_lines(self):
         line_tmpl = 'export {var_name}={var_value}'
         return [
             line_tmpl.format(var_name=n, var_value=v)
             for n, v in self._environment_vars.items()]
 
-    def __create_postactivate_path_ext_lines(self):
+    def _create_postactivate_path_ext_lines(self):
         if not self._path_extensions:
             return []
         path_backup = '{path_backup}=$PATH'.format(
@@ -44,15 +44,15 @@ class HookBuilder(object):
 
     def write_postdeactivate_hook(self):
         postdeactivate_hook_file = self.__get_hook_file('postdeactivate')
-        env_vars = self.__create_postdeactivate_env_var_lines()
-        path_mod = self.__create_postdeactivate_path_lines()
+        env_vars = self._create_postdeactivate_env_var_lines()
+        path_mod = self._create_postdeactivate_path_lines()
         self.__write_hook_file(postdeactivate_hook_file, env_vars + path_mod)
 
-    def __create_postdeactivate_env_var_lines(self):
+    def _create_postdeactivate_env_var_lines(self):
         line_tmpl = 'unset {var_name}'
         return [line_tmpl.format(var_name=n) for n in self._environment_vars]
 
-    def __create_postdeactivate_path_lines(self):
+    def _create_postdeactivate_path_lines(self):
         if not self._path_extensions:
             return []
         return [
