@@ -4,10 +4,15 @@
 from setuptools import setup
 
 setup(
-    name = 'virtualenv-ruby',
-    version = '0.1-dev',
-    package_dir = {
+    name='virtualenv-ruby',
+    version='0.1-dev',
+    package_dir={
         '': 'src',
     },
-    packages = ['virtualenv_ruby'],
+    packages=['virtualenv_ruby'],
+    entry_points={
+        'console_scripts': [
+            'virtualenv_ruby_install = virtualenv_ruby.main:main',
+        ]
+    }
 )
