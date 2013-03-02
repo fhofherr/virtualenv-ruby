@@ -22,9 +22,9 @@ class TestHookBuilder(TestCase):
         path_ext = '$GEM_HOME/bin'
         self.hook_builder.extend_path(path_ext)
         expected_lines = [
-            '{path_backup}=$PATH'.format(
+            '{path_backup}=$PATH\n'.format(
                 path_backup=hooks._VIRTUALENV_RUBY_OLD_PATH),
-            'export PATH="{path_ext}:$PATH"'.format(path_ext=path_ext),
+            'export PATH="{path_ext}:$PATH"\n'.format(path_ext=path_ext),
         ]
         with self.patched_open():
             self.hook_builder.write_postactivate_hook()
@@ -33,9 +33,9 @@ class TestHookBuilder(TestCase):
 
     def test_resets_path_in_postdeactivate_hook(self):
         expected_lines = [
-            'export PATH=${path_backup}'.format(
+            'export PATH=${path_backup}\n'.format(
                 path_backup=hooks._VIRTUALENV_RUBY_OLD_PATH),
-            'unset {path_backup}'.format(
+            'unset {path_backup}\n'.format(
                 path_backup=hooks._VIRTUALENV_RUBY_OLD_PATH),
         ]
         self.hook_builder.extend_path('$GEM_HOME/bin')
@@ -47,7 +47,7 @@ class TestHookBuilder(TestCase):
     def test_appends_environment_variable_to_postactivate_hook(self):
         var_name = 'GEM_HOME'
         var_value = '$VIRTUAL_ENV/lib/ruby/gems'
-        expected_lines = ['export ' + var_name + "=" + var_value]
+        expected_lines = ['export ' + var_name + "=" + var_value + '\n']
 
         self.hook_builder.add_environment_variable(var_name, var_value)
         with self.patched_open():
@@ -58,7 +58,7 @@ class TestHookBuilder(TestCase):
     def test_appends_environment_variable_to_postdeactivate_hook(self):
         var_name = 'GEM_HOME'
         var_value = '$VIRTUAL_ENV/lib/ruby/gems'
-        expected_lines = ['unset ' + var_name]
+        expected_lines = ['unset ' + var_name + '\n']
 
         self.hook_builder.add_environment_variable(var_name, var_value)
         with self.patched_open():

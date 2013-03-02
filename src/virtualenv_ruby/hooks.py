@@ -28,7 +28,7 @@ class HookBuilder(object):
         self.__write_hook_file(postactivate_hook_file, env_vars + path_exts)
 
     def _create_postactivate_env_var_lines(self):
-        line_tmpl = 'export {var_name}={var_value}'
+        line_tmpl = 'export {var_name}={var_value}\n'
         return [
             line_tmpl.format(var_name=n, var_value=v)
             for n, v in self._environment_vars.items()]
@@ -36,9 +36,9 @@ class HookBuilder(object):
     def _create_postactivate_path_ext_lines(self):
         if not self._path_extensions:
             return []
-        path_backup = '{path_backup}=$PATH'.format(
+        path_backup = '{path_backup}=$PATH\n'.format(
             path_backup=_VIRTUALENV_RUBY_OLD_PATH)
-        path_exts = 'export PATH="{paths}:$PATH"'.format(
+        path_exts = 'export PATH="{paths}:$PATH"\n'.format(
             paths=''.join(self._path_extensions))
         return [path_backup, path_exts]
 
@@ -49,16 +49,16 @@ class HookBuilder(object):
         self.__write_hook_file(postdeactivate_hook_file, env_vars + path_mod)
 
     def _create_postdeactivate_env_var_lines(self):
-        line_tmpl = 'unset {var_name}'
+        line_tmpl = 'unset {var_name}\n'
         return [line_tmpl.format(var_name=n) for n in self._environment_vars]
 
     def _create_postdeactivate_path_lines(self):
         if not self._path_extensions:
             return []
         return [
-            'export PATH=${path_backup}'.format(
+            'export PATH=${path_backup}\n'.format(
                 path_backup=_VIRTUALENV_RUBY_OLD_PATH),
-            'unset {path_backup}'.format(
+            'unset {path_backup}\n'.format(
                 path_backup=_VIRTUALENV_RUBY_OLD_PATH),
         ]
 
