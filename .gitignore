@@ -2,3 +2,9 @@
 *.swp
 
 *.pyc
+*.egg-info/
+*.egg/
+
+.coverage
+build/
+dist/
