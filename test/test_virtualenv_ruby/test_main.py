@@ -25,7 +25,7 @@ class TestModifyHooks(TestCase):
         expected_calls = [
             call.add_environment_variable(
                 'GEM_HOME', '$VIRTUAL_ENV/lib/ruby/gems'),
-            call.add_environment_variable('GEM_PATH', ''),
+            call.add_environment_variable('GEM_PATH', '""'),
             call.extend_path('$GEM_HOME/bin'),
             call.write_hooks()
         ]

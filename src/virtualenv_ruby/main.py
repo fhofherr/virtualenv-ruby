@@ -10,7 +10,7 @@ def modify_and_write_hooks(hook_builder):
     hook_builder.add_environment_variable(
         'GEM_HOME', '$VIRTUAL_ENV/lib/ruby/gems')
     hook_builder.add_environment_variable(
-        'GEM_PATH', '')
+        'GEM_PATH', '""')
     hook_builder.extend_path('$GEM_HOME/bin')
     hook_builder.write_hooks()
 
