@@ -6,3 +6,5 @@
 *.egg/
 
 .coverage
+build/
+dist/
